@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Document</title>
+	<link href="./output.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="bg-white">
+		<main class="isolate">
+			<!-- Hero section -->
+			<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+				<div class="mx-auto max-w-5xl px-6 lg:px-8">
+					<div class="mx-auto text-center">
+						<h1 class="text-balance text-6xl font-semibold tracking-tight text-gray-900">
+							Tuning-Free Long Video Generation via
+							Coupled Sampling
+						</h1>
+						<p class="mt-8 text-pretty text-lg font-light text-gray-500 sm:text-xl/8">
+							TL; DR: a tuning-free sampling framework
+							that extends any existing video diffusion
+							model <br />
+							for long video generation controlled by
+							multiple prompts
+						</p>
+
+						<div class="mt-10 rounded-md bg-yellow-50 p-4 text-left">
+							<div class="flex">
+								<div class="shrink-0">
+									<svg class="size-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+										aria-hidden="true" data-slot="icon">
+										<path fill-rule="evenodd"
+											d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+											clip-rule="evenodd" />
+									</svg>
+								</div>
+								<div class="ml-3">
+									<h3 class="text-sm font-medium text-yellow-800">
+										Note
+									</h3>
+									<div class="mt-2 text-sm text-yellow-700">
+										<p>
+											If some visuals are not
+											displaying correctly, please
+											try refreshing the page.
+											Best viewed on a monitor and
+											with a Chrome browser
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+
+
+
+	<script>
+		function nextSlide(button) {
+			const carousel = button.closest('.carousel');
+			const items = carousel.querySelectorAll('.carousel-item');
+			const activeItem = carousel.querySelector('.carousel-item.active');
+			const dots = carousel.querySelectorAll('.dot');
+			let currentIndex = Array.from(items).indexOf(activeItem);
+
+			items[currentIndex].classList.remove('active');
+			dots[currentIndex].classList.remove('active');
+
+			currentIndex = (currentIndex + 1) % items.length;
+
+			items[currentIndex].classList.add('active');
+			dots[currentIndex].classList.add('active');
+		}
+
+		function prevSlide(button) {
+			const carousel = button.closest('.carousel');
+			const items = carousel.querySelectorAll('.carousel-item');
+			const activeItem = carousel.querySelector('.carousel-item.active');
+			const dots = carousel.querySelectorAll('.dot');
+			let currentIndex = Array.from(items).indexOf(activeItem);
+
+			items[currentIndex].classList.remove('active');
+			dots[currentIndex].classList.remove('active');
+
+			currentIndex = (currentIndex - 1 + items.length) % items.length;
+
+			items[currentIndex].classList.add('active');
+			dots[currentIndex].classList.add('active');
+		}
+
+		function goToSlide(dot, index) {
+			const carousel = dot.closest('.carousel');
+			const items = carousel.querySelectorAll('.carousel-item');
+			const dots = carousel.querySelectorAll('.dot');
+			const activeItem = carousel.querySelector('.carousel-item.active');
+
+			const currentIndex = Array.from(items).indexOf(activeItem);
+
+			items[currentIndex].classList.remove('active');
+			dots[currentIndex].classList.remove('active');
+
+			items[index].classList.add('active');
+			dots[index].classList.add('active');
+		}
+	</script>
+
+
+	<!-- object motion control -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						Object motion control
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								Gorilla Playing a Heavy Metar Guitar
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/motion/gorilla1.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: Anthropomorphic gorilla playing a heavy metal
+							guitar.
+							<br>
+							<b>Local prompt 1</b>: Strumming energetically with a fierce expression.
+							<br>
+							<b>Local prompt 2</b>: Grinning widely as it plays a powerful riff.
+							<br>
+							<b>Local prompt 3</b>: Stomping its foot on the stage, emphasizing the
+							rhythm.
+							<br>
+							<b>Local prompt 4</b>: Leaning back dramatically as it hits a high note.
+						</div>
+					</div>
+					<!-- Slide 2 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								The Jamaican Portrait
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/motion/beach.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: A closeup portrait of a gorgeous young Jamaican
+								man with neatly styled,
+								medium-length dreadlocks in a tropical sunset.
+								He wears a white linen shirt, slightly unbuttoned, revealing a glimpse
+								of his toned chest and a thin gold chain.
+								<br>
+								<b>Local prompt 1</b>: He gently sweeps back his dreadlocks with one
+								hand.
+								<br>
+								<b>Local prompt 2</b>: He looks to the side.
+								<br>
+								<b>Local prompt 3</b>: He tilts his head.
+								<br>
+								<b>Local prompt 4</b>: He rests his hand casually on his chest.
+							</p>
+						</div>
+					</div>
+					<!-- Slide 3 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								Cheeseball on the Moon
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/motion/cheeseball.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: An adorable kawaii cheeseball on the moon smiling,
+								3D render, octane, soft lighting, dreamy bokeh, light sparkles floating
+								in the background.
+								<br>
+								<b>Local prompt 1</b>: The cheeseball wiggles slightly, its rounded
+								shape catching the soft light as it shimmers.
+								<br>
+								<b>Local prompt 2</b>: A soft sparkle lands on the cheeseball's surface,
+								making it blush a gentle pink, adding to its cuteness.
+								<br>
+								<b>Local prompt 3</b>: The cheeseball's eyes blink slowly, a soft
+								reflection of the stars above shimmering in them.
+								<br>
+								<b>Local prompt 4</b>: The cheeseball hops slightly on the moon's
+								surface, leaving a tiny imprint in the soft, glowing moon dust.
+							</p>
+						</div>
+					</div>
+
+				</div>
+				<!-- Navigation Arrows -->
+				<div class="carousel-controls">
+					<button class="carousel-prev" onclick="prevSlide(this)">&#8592;</button>
+					<button class="carousel-next" onclick="nextSlide(this)">&#8594;</button>
+				</div>
+				<!-- Dots -->
+				<div class="carousel-dots">
+					<span class="dot active" onclick="goToSlide(this, 0)"></span>
+					<span class="dot" onclick="goToSlide(this, 1)"></span>
+					<span class="dot" onclick="goToSlide(this, 2)"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Background changes -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						Background changes
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								The Endless Battle: Pirates of Sea, Ice, and Space
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/background/battle.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: Flying through an intense battle between pirate
+							ships, with explosions and chaos filling the air.
+							<br>
+							<b>Local prompt 1</b>: The pirate ships are battling in the vastness of
+							the universe, surrounded by stars and distant galaxies, as laser blasts
+							and explosions illuminate the space.
+							<br>
+							<b>Local prompt 2</b>: The pirate ships clash on a frozen glacier, their
+							cannons firing across the icy landscape as shards of ice break away from
+							the intense combat.
+							<br>
+							<b>Local prompt 3</b>: The pirate ships fight on the stormy ocean, their
+							sails flapping in the violent wind as waves crash around them, adding to
+							the intensity of the battle.
+							<br>
+						</div>
+					</div>
+					<!-- Slide 2 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								The Surfing Astronaut
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/background/surfing.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: An astronaut in a white uniform, equipped with a
+								helmet and gear.
+								<br>
+								<b>Local prompt 1</b>: The astronaut snowboards down a snowy hill,
+								carving smooth paths in the powdery snow, with their white uniform
+								blending into the wintery landscape.
+								<br>
+								<b>Local prompt 2</b>: The astronaut surfs in the sea, balancing on a
+								surfboard as ocean waves crash around them, the water glistening under
+								the sun.
+								<br>
+								<b>Local prompt 3</b>: The astronaut surfs across desert dunes,
+								effortlessly gliding over the golden sand as the wind kicks up light
+								grains behind them.
+								<br>
+							</p>
+						</div>
+					</div>
+					<!-- Slide 3 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								The Butterfly’s Four Seasons
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/background/butterfly2.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: A delicate white butterfly sits on a flower.
+								<br>
+								<b>Local prompt 1</b>: In spring, the butterfly perches on a blooming
+								flower, with fresh greenery and vibrant blossoms filling the air with
+								renewal.
+								<br>
+								<b>Local prompt 2</b>: In summer, the butterfly sits on a bright flower
+								under the warm sun, as the landscape is filled with lush greenery and
+								abundant life.
+								<br>
+								<b>Local prompt 3</b>: In autumn, the butterfly lands on a fading
+								flower, with orange and red leaves scattered on the ground, signaling
+								the transition to cooler days.
+								<br>
+								<b>Local prompt 4</b>: In winter, the butterfly perches on a frosty
+								flower, with snow lightly covering the landscape, creating a calm, cold
+								atmosphere.
+							</p>
+						</div>
+					</div>
+
+					<!-- Slide 4 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								The Butterfly and the Changing Petals
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/background/butterfly1.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: A white butterfly is sitting on a flower.
+								<br>
+								<b>Local prompt 1</b>: A butterfly is sitting on a purple flower, its
+								wings gently folded as it interacts with the petals.
+								<br>
+								<b>Local prompt 2</b>: The butterfly is perched on a flower as the
+								purple petals gradually turn pink, creating a striking visual contrast.
+								<br>
+								<b>Local prompt 3</b>: The butterfly is perched on a pink flower, its
+								white wings standing out against the crimson background.
+								<br>
+							</p>
+						</div>
+					</div>
+
+				</div>
+				<!-- Navigation Arrows -->
+				<div class="carousel-controls">
+					<button class="carousel-prev" onclick="prevSlide(this)">&#8592;</button>
+					<button class="carousel-next" onclick="nextSlide(this)">&#8594;</button>
+				</div>
+				<!-- Dots -->
+				<div class="carousel-dots">
+					<span class="dot active" onclick="goToSlide(this, 0)"></span>
+					<span class="dot" onclick="goToSlide(this, 1)"></span>
+					<span class="dot" onclick="goToSlide(this, 2)"></span>
+					<span class="dot" onclick="goToSlide(this, 3)"></span> </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Composition -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						Composition
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								Two Squirrels in Antarctica
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/composition/squirrel.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A cute brown squirrel is in the vast, icy
+							environment of Antarctica, perched on a pile of hazelnuts.
+							<br>
+							<b>Local prompt 1</b>: The squirrel looks content, nibbling on the nuts,
+							with the frozen landscape serving as an unusual yet picturesque
+							backdrop.
+							<br>
+							<b>Local prompt 2</b>: Alongside it is a cute white squirrel, and the
+							two sit together on the pile of nuts, enjoying the cinematic beauty of
+							the Antarctic setting.
+							<br>
+						</div>
+					</div>
+					<!-- Slide 2 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								Two Travelers: A Knight and Wizard
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/composition/knight.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: A brave young knight journeys through a dense
+								forest, the trees towering above as sunlight filters through the leaves.
+								<br>
+								<b>Local prompt 1</b>: The knight strides confidently, his armor
+								clinking softly as he navigates the forest in search of his next
+								adventure.
+								<br>
+								<b>Local prompt 2</b>: Accompanying him is a wise wizard, walking beside
+								him as they journey together, their combined strength and wisdom guiding
+								them through the woodland.
+							</p>
+						</div>
+					</div>
+
+				</div>
+				<!-- Navigation Arrows -->
+				<div class="carousel-controls">
+					<button class="carousel-prev" onclick="prevSlide(this)">&#8592;</button>
+					<button class="carousel-next" onclick="nextSlide(this)">&#8594;</button>
+				</div>
+				<!-- Dots -->
+				<div class="carousel-dots">
+					<span class="dot active" onclick="goToSlide(this, 0)"></span>
+					<span class="dot" onclick="goToSlide(this, 1)"></span>
+					<span class="dot" onclick="goToSlide(this, 2)"></span>
+					<span class="dot" onclick="goToSlide(this, 3)"></span> </div>
+			</div>
+		</div>
+	</div>
+
+	<!-- camera control -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						Camera control
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								A Journey Along Big Sur
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/camera/gary.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: Big Sur’s Garay Point Beach with rugged cliffs and crashing
+							waves.
+							Golden light of the setting sun illuminating the rocky shore.
+							<br>
+							<b>Local prompt 1</b>: The camera moves closer to the cliff’s edge, capturing the
+							green shrubbery and the rugged rocks in sharp detail.
+							<br>
+							<b>Local prompt 2</b>: The camera pans across the cliffs, showcasing the steep drop
+							from the road down to the beach, with the cliff’s edges jutting out over the sea.
+							<br>
+							<b>Local prompt 3</b>: The camera focuses on the small island with the lighthouse,
+							highlighting its position in the distance and the serene beauty of the setting sun
+							behind it.
+							<br>
+							<b>Local prompt 4</b>: The camera pulls back to a wide shot, showing the entire
+							beach, cliffs, and the expanse of the ocean, capturing the raw beauty of the coast.
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Physical transformation -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						Camera control
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								The Candle in the Dark Room
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/physics/candle.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A candle is present in a dark room, casting a quiet and
+							intimate atmosphere, with minimal light and shadows enveloping the space & camera
+							locked down & camera closed shot.
+							<br>
+							<b>Local prompt 1</b>: The candle is brightly lit, its flame flickering and casting
+							warm light across the room
+							<br>
+							<b>Local prompt 2</b>: Smoke rises gently from the candle and the flame flickers.
+							<br>
+							<b>Local prompt 3</b>: The candle is extinguished and remains unlit with no flame or
+							light to illuminate the room.
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- stroytelling -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						Stroytelling
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								A bear's adventure: leaping into reality
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/motion/bear.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A bear.
+							<br>
+							<b>Local prompt 1</b>: A cartoon-style bear. The bear appears in colorful comic book
+							panels.
+							<br>
+							<b>Local prompt 2</b>: A cartoon-style bear. The bear leaps off the comic page into
+							a vibrant, realistic setting, transitioning from cartoon to real world.
+							<br>
+							<b>Local prompt 3</b>: A realistic bear. Now in the real world, the bear dances
+							energetically, its playful moves adding charm to its new environment.
+							<br>
+							<b>Local prompt 4</b>: A realistic bear. The bear sits down, taking a peaceful
+							moment to rest and unwind after its adventures in the real world.
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 8 times longer in duration -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						8 times longer videos
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								Drone shot of ancient city
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/long/drone.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: An FPV drone flies over an ancient city.
+							The sun casts long shadows, highlighting the intricate stonework and
+							pathways.
+							<br>
+							<!-- <b>Local prompt 1</b>: The drone flies under a stone arch.
+							<br>
+							<b>Local prompt 2</b>: It goes higher after passing under the arch,
+							showing more buildings lining the narrow street ahead.
+							<br>
+							<b>Local prompt 3</b>: The drone turns left, flying just over the
+							rooftops and showing details of the stones on the roofs.
+							<br>
+							<b>Local prompt 4</b>: It flies lower, going through a smaller arch that
+							is covered in vines and green moss.
+							<br>
+							<b>Local prompt 5</b>: The drone follows a stone path, passing by
+							statues and small shrines along the sides of the road.
+							<br>
+							<b>Local prompt 6</b>: It flies close to a large temple.
+							<br>
+							<b>Local prompt 7</b>: The drone shows the shadows of the tall buildings
+							on the ground.
+							<br>
+							<b>Local prompt 8</b>: It flies higher to show a view of the cliffs
+							around the city, with the river shining in the distance. -->
+						</div>
+					</div>
+					<!-- Slide 2 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								Rotating camera scene showing the old man's day
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/long/oldman.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: A man is elderly, with short graying hair and
+								glasses.
+								He wears a dark blue T-shirt and blue checkered shorts, giving him a
+								relaxed, casual appearance.
+								<br>
+								<!-- <b>Local prompt 1</b>: The camera pans steadily to the right. The man in
+								the kitchen is cooking.
+								<br>
+								<b>Local prompt 2</b>: The camera pans steadily to the right. The man
+								enters a shadowy room through open white French doors with glass panes
+								<br>
+								<b>Local prompt 3</b>: The camera pans steadily to the right. The man
+								holds a phone to his ear.
+								<br>
+								<b>Local prompt 4</b>: The camera pans steadily to the right. The man is
+								watching TV, leaning back in a relaxed posture.
+								<br>
+								<b>Local prompt 5</b>: The camera pans steadily to the right. The man
+								rests peacefully in bed.
+								<br>
+								<b>Local prompt 6</b>: The camera pans steadily to the right. The man is
+								seated at the dining table.
+								<br>
+								<b>Local prompt 7</b>: The camera pans steadily to the right. The man is
+								hunched slightly over a laptop.
+								<br>
+								<b>Local prompt 8</b>: The camera pans steadily to the right. The man
+								sits peacefully in an armchair by a large window. -->
+							</p>
+						</div>
+					</div>
+					<!-- Slide 3 -->
+					<div class="carousel-item">
+						<div class="title-container2">
+							<p>
+								A woman walking on a Tokyo street
+							</p>
+						</div>
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/teaser/long/walking.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<p class="text-base-content/80 font-normal pt-3">
+								<b>Global prompt</b>: A stylish woman walks down a Tokyo street filled
+								with warm glowing neon and animated city signage.
+								She wears a black leather jacket, a long red dress, and black boots, and
+								carries a black purse.
+								She wears sunglasses and red lipstick.
+								<br>
+								<!-- <b>Local prompt 1</b>: The camera shows a soft glow around her black
+								jacket and red dress, with lights reflecting on the wet ground.
+								<br>
+								<b>Local prompt 2</b>: The woman walks confidently, and the camera keeps
+								her clear while the people and lights behind her are blurry, making her
+								stand out with her sunglasses and red lipstick.
+								<br>
+								<b>Local prompt 3</b>: As she walks through the bright city, the camera
+								catches flashes of light from neon signs, with the wet street reflecting
+								the glow on her black jacket and red dress.
+								<br>
+								<b>Local prompt 4</b>: The camera stays focused on the woman while the
+								lights and people around her are blurred, making her confident walk
+								stand out in the colorful, glowing city.
+								<br>
+								<b>Local prompt 5</b>: As the woman walks, the camera shows raindrops
+								glowing in the neon lights, with a blurry, colorful background of people
+								and signs.
+								<br>
+								<b>Local prompt 6</b>: The camera shows the woman’s reflection on the
+								wet street, with colorful neon lights bouncing off her black boots and
+								red dress.
+								<br>
+								<b>Local prompt 7</b>: The woman walks under streetlights, with the
+								camera showing blurry, glowing circles of light behind her, making her
+								clear figure stand out.
+								<br>
+								<b>Local prompt 8</b>: As the woman walks through the busy street, the
+								camera slightly blurs the moving people around her, while keeping the
+								neon lights and her outfit sharp and glowing. -->
+							</p>
+						</div>
+					</div>
+
+				</div>
+				<!-- Navigation Arrows -->
+				<div class="carousel-controls">
+					<button class="carousel-prev" onclick="prevSlide(this)">&#8592;</button>
+					<button class="carousel-next" onclick="nextSlide(this)">&#8594;</button>
+				</div>
+				<!-- Dots -->
+				<div class="carousel-dots">
+					<span class="dot active" onclick="goToSlide(this, 0)"></span>
+					<span class="dot" onclick="goToSlide(this, 1)"></span>
+					<span class="dot" onclick="goToSlide(this, 2)"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+		<p class="text-base-content/80 font-normal pt-3">
+			* All the above videos are generated on M.
+		</p>
+	</div>
+
+
+	<!-- Open-Sora-Plan-v1.3 -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						On Open-Sora-Plan-v1.3 (4x times longer)
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								An Anthropomorphic Fox Playing Sports
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/opensora/surfing2.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: An anthropomorphic fox, with bright orange fur and a white underbelly, stands confidently, ready for adventure.
+							<br>
+							<b>Local prompt 1</b>: The fox rides the powerful waves of the sea, skillfully balancing on a surfboard as the ocean sprays around it.
+							<br>
+							<b>Local prompt 2</b>: The fox races down a snowy mountain slope, expertly maneuvering through the powdery snow with speed and agility.
+						</div>
+					</div>
+
+					<!-- Slide 2 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								The Changing Phases of a Volcano
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/opensora/volcano.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A volcano stands prominently against the landscape, its towering form visible in the distance.
+							<br>
+							<b>Local prompt 1</b>: The volcano erupts violently under clear skies, sending ash and lava high into the air.
+							<br>
+							<b>Local prompt 2</b>: Smoke gently rises from the crater, signaling the end of the volcanic eruption.
+							eruption.
+							<br>
+							<b>Local prompt 3</b>: The weather around the volcano turns cloudy, with dark clouds gathering above, as the environment shifts from clear skies to an ominous, overcast atmosphere.
+						</div>
+					</div>
+
+					<!-- Slide 3 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								A Panda Performing in Times Square
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/opensora/panda.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A panda is performing on the streets of Times Square, surrounded by
+							bright billboards, flashing lights, and a lively crowd.
+							<br>
+							<b>Local prompt 1</b>: The panda plays the guitar, strumming happily as people gather to
+							watch the performance.
+							<br>
+							<b>Local prompt 2</b>: The panda starts dancing, moving playfully to the rhythm of the
+							music.
+							<br>
+							<b>Local prompt 3</b>: The panda dances energetically, delighting the crowd.
+							<br>
+						</div>
+					</div>
+
+
+					<!-- Slide 4 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								The Butterfly’s Four Seasons
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/opensora/butterfly2.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A delicate white butterfly sits on a flower.
+							<br>
+							<b>Local prompt 1</b>: In spring, the butterfly perches on a blooming
+							flower, with fresh greenery and vibrant blossoms filling the air with
+							renewal.
+							<br>
+							<b>Local prompt 2</b>: In summer, the butterfly sits on a bright flower
+							under the warm sun, as the landscape is filled with lush greenery and
+							abundant life.
+							<br>
+							<b>Local prompt 3</b>: In autumn, the butterfly lands on a fading
+							flower, with orange and red leaves scattered on the ground, signaling
+							the transition to cooler days.
+							<br>
+							<b>Local prompt 4</b>: In winter, the butterfly perches on a frosty
+							flower, with snow lightly covering the landscape, creating a calm, cold
+							atmosphere.
+						</div>
+					</div>
+
+					<!-- Slide 5 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								Seasons of a Waterfall
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/opensora/waterfall.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A waterfall flows down a mountainside.
+							<br>
+							<b>Local prompt 1</b>: The waterfall flows powerfully through lush summer mountains under a
+							bright, clear sky.
+							<br>
+							<b>Local prompt 2</b>: The waterfall cascades through autumn mountains, surrounded by golden
+							leaves under a crisp, clear sky.
+							<br>
+							<b>Local prompt 3</b>: The waterfall continues its journey through winter mountains, with
+							snow blanketing the ground and the sky remaining clear.
+							<br>
+							<b>Local prompt 4</b>: The waterfall is frozen solid during a snowstorm, as snow swirls in
+							the air and blankets the surrounding landscape.
+						</div>
+					</div>
+
+				</div>
+				<!-- Navigation Arrows -->
+				<div class="carousel-controls">
+					<button class="carousel-prev" onclick="prevSlide(this)">&#8592;</button>
+					<button class="carousel-next" onclick="nextSlide(this)">&#8594;</button>
+				</div>
+				<!-- Dots -->
+				<div class="carousel-dots">
+					<span class="dot active" onclick="goToSlide(this, 0)"></span>
+					<span class="dot" onclick="goToSlide(this, 1)"></span>
+					<span class="dot" onclick="goToSlide(this, 2)"></span>
+					<span class="dot" onclick="goToSlide(this, 3)"></span>
+					<span class="dot" onclick="goToSlide(this, 4)"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- CogVideoX -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+		<div class="carousel-container">
+
+
+			<!-- Carousel 1 -->
+			<div class="carousel">
+
+				<div class="title-container">
+					<p>
+						On CogVideoX-2B (4x times longer)
+					</p>
+				</div>
+
+				<div class="carousel-inner">
+
+					<!-- Slide 1 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								A Black Labrador on Bustling Streets
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/cogvideox/dog.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A sleek black Labrador with a glossy coat stands confidently on a
+							bustling street.
+							<br>
+							<b>Local prompt 1</b>: On a bustling street in Times Square
+							<br>
+							<b>Local prompt 2</b>: On a bustling street in Japan.
+							<br>
+							<b>Local prompt 3</b>: On a bustling street in Chinatown
+							<br>
+							<b>Local prompt 4</b>: On a bustling street in Korea
+						</div>
+					</div>
+
+					<!-- Slide 2 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								The Dark Knight on a Black Horse
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/cogvideox/knight.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A dark knight, clad in gleaming black armor, sits majestically atop a
+							black horse. Its imposing presence casts long shadows in the moonlit night.
+							<br>
+							<b>Local prompt 1</b>: The horse is standing still.
+							<br>
+							<b>Local prompt 2</b>: The horse begins to move forward.
+							<br>
+							<b>Local prompt 3</b>: The background shifts to a snowy landscape.
+							<br>
+						</div>
+					</div>
+
+
+					<!-- Slide 3 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								The Butterfly and the Changing Petals
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/cogvideox/butterfly1.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A white butterfly is sitting on a flower.
+							<br>
+							<b>Local prompt 1</b>: A butterfly is sitting on a purple flower, its
+							wings gently folded as it interacts with the petals.
+							<br>
+							<b>Local prompt 2</b>: The butterfly is perched on a flower as the
+							purple petals gradually turn pink, creating a striking visual contrast.
+							<br>
+							<b>Local prompt 3</b>: The butterfly is perched on a pink flower, its
+							white wings standing out against the crimson background.
+						</div>
+					</div>
+
+					<!-- Slide 4 -->
+					<div class="carousel-item active">
+
+						<div class="title-container2">
+							<p>
+								Seasons of a Waterfall
+							</p>
+						</div>
+
+
+						<div class="video-container">
+							<video controls>
+								<source src="resources/cogvideox/waterfall.mp4" type="video/mp4" />
+							</video>
+						</div>
+						<div class="text-container">
+							<b>Global prompt</b>: A waterfall flows down a mountainside.
+							<br>
+							<b>Local prompt 1</b>: The waterfall flows powerfully through lush summer mountains under a
+							bright, clear sky.
+							<br>
+							<b>Local prompt 2</b>: The waterfall cascades through autumn mountains, surrounded by golden
+							leaves under a crisp, clear sky.
+							<br>
+							<b>Local prompt 3</b>: The waterfall continues its journey through winter mountains, with
+							snow blanketing the ground and the sky remaining clear.
+							<br>
+							<b>Local prompt 4</b>: The waterfall is frozen solid during a snowstorm, as snow swirls in
+							the air and blankets the surrounding landscape.
+						</div>
+					</div>
+
+				</div>
+				<!-- Navigation Arrows -->
+				<div class="carousel-controls">
+					<button class="carousel-prev" onclick="prevSlide(this)">&#8592;</button>
+					<button class="carousel-next" onclick="nextSlide(this)">&#8594;</button>
+				</div>
+				<!-- Dots -->
+				<div class="carousel-dots">
+					<span class="dot active" onclick="goToSlide(this, 0)"></span>
+					<span class="dot" onclick="goToSlide(this, 1)"></span>
+					<span class="dot" onclick="goToSlide(this, 2)"></span>
+					<span class="dot" onclick="goToSlide(this, 3)"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Abstract section -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+
+
+		<div class="border-b border-gray-300 pb-5">
+			<h3 class="text-3xl font-semibold text-gray-900">
+				Abstract
+			</h3>
+		</div>
+		<p class="text-base-content/80 font-normal pt-3">
+			Recently, text-to-video diffusion models have shown
+			remarkable success in generating a single video clip
+			from a single prompt. Building on this advancement,
+			several works have extended these models to generate
+			long videos with multiple prompts, enabling dynamic
+			changes controlled by each prompt. However, these
+			approaches often focus solely on smooth transitions
+			between adjacent video clips, leading to a drift of
+			content or semantics across the entire video due to a
+			lack of global synchronization. In this work, we propose
+			Synchronized Coupled Sampling (SynCoS), a new sampling
+			framework that extends any text-to-video diffusion model
+			by synchronizing denoising across multiple video chunks
+			beyond adjacent clips. To achieve this, we couple DDIM
+			with optimization-based sampling to facilitate
+			synchronous integration across multiple video chunks.
+			Experimental results demonstrate that our method
+			generates long videos with diverse changes controlled by
+			each prompt while ensuring seamless transitions between
+			adjacent chunks and long-term consistency throughout the
+			entire video.
+		</p>
+	</div>
+
+	<!-- Overview section -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+		<div class="border-b border-gray-300 pb-5">
+			<h3 class="text-3xl font-semibold text-gray-900">
+				Overview
+			</h3>
+		</div>
+
+		<br />
+		<img src="resources/overview.png" alt="Description of the image" width="1500" />
+		<p class="text-base-content/80 font-normal pt-3">
+			This is an overview of our tuning-free sampling
+			framework, SynCoS. Mainly, it consists of three main
+			stages.<br />
+
+			<b>1. Perform a DDIM update</b> for each overlapping
+			short video chunk. At this stage, instead of fully
+			reverting each chunk to its previous timestep, we
+			proceed until obtaining the data space samples through
+			DDIM update, then fuse them to ensure smooth transitions
+			between overlapping chunks.<br />
+			<b>2. Refine the fused output using CSD</b>. By
+			intervening in the DDIM update and conceptualizing them
+			as a refinement task, SynCoS effectively achieves global
+			synchronization across multiple video chunks.<br />
+			<b>3. Resume the DDIM update</b> to revert the refined,
+			fused chunks to the previous timestep.
+			<br />
+		</p>
+	</div>
+
+	<!-- Comparison section -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+		<div class="border-b border-gray-300 pb-5">
+			<h3 class="text-3xl font-semibold text-gray-900">
+				Comparisons Longer Video Generation with Multiple
+				Prompts
+			</h3>
+		</div>
+
+		<div class="accordion divide-neutral/20 max-w-4xl divide-y">
+			<div class="accordion-item active" id="first-nested">
+				<button class="accordion-toggle inline-flex items-center gap-x-4 text-start"
+					aria-controls="first-nested-collapse" aria-expanded="true">
+					<span
+						class="icon-[tabler--plus] accordion-item-active:hidden text-base-content size-4.5 block shrink-0"></span>
+					<span
+						class="icon-[tabler--minus] accordion-item-active:block text-base-content size-4.5 hidden shrink-0"></span>
+					On CogVideoX
+				</button>
+				<div id="first-nested-collapse"
+					class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+					aria-labelledby="first-nested" role="region">
+					<div class="video-block">
+						<div class="accordion divide-neutral/20 divide-y ps-6">
+							<div class="accordion-item active" id="first-sub-one">
+								<!-- <button
+											class="accordion-toggle inline-flex items-center gap-x-4 text-start"
+											aria-controls="first-sub-collapse-one"
+											aria-expanded="true">
+											<span
+												class="icon-[tabler--plus] accordion-item-active:hidden text-base-content size-4.5 block shrink-0"></span>
+											<span
+												class="icon-[tabler--minus] accordion-item-active:block text-base-content size-4.5 hidden shrink-0"></span>
+											Astronaut
+										</button> -->
+								<div id="first-sub-collapse-one"
+									class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+									aria-labelledby="first-sub-one" role="region">
+									<div class="px-5 pb-4">
+										<ul role="list" class="grid grid-cols-3 gap-x-1 gap-y-8">
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/comp_cogvideox/astronaut/genlvideo.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Gen-L-Video
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/comp_cogvideox/astronaut/fifo.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													FIFO
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/comp_cogvideox/astronaut/ours.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Ours
+												</p>
+											</li>
+										</ul>
+									</div>
+									<div class="px-5 pb-4">
+										<label
+											class="swap rounded-full bg-white px-3.5 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+											<input id="CogVideoXControl" type="checkbox" />
+											<span class="swap-off inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-play]"></span>
+												<span class="pl-1.5">Play All
+													Videos</span>
+											</span>
+											<span class="swap-on inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-pause]"></span>
+												Pause All Videos
+											</span>
+										</label>
+										<p class="text-base-content/80 font-normal pt-3">
+											<b>Global prompt</b>: An
+											astronaut in a white
+											spacesuit with
+											reflective visor is seen
+											in the surreal landscape
+											of Mars.
+											<br />
+											<b>Local prompt 1</b>:
+											The astronaut walks
+											carefully through a
+											small puddle of liquid
+											on the Martian surface,
+											the red terrain
+											stretching out behind,
+											as ripples form with
+											each step.
+											<br />
+											<b>Local prompt 2</b>:
+											The astronaut stands
+											still, watching
+											fireworks explode in the
+											alien sky, their vibrant
+											colors contrasting
+											against the red Martian
+											horizon and rocky
+											landscape.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="accordion-item" id="second-nested">
+				<button class="accordion-toggle inline-flex items-center gap-x-4 text-start"
+					aria-controls="second-nested-collapse" aria-expanded="false">
+					<span
+						class="icon-[tabler--plus] accordion-item-active:hidden text-base-content size-4.5 block shrink-0"></span>
+					<span
+						class="icon-[tabler--minus] accordion-item-active:block text-base-content size-4.5 hidden shrink-0"></span>
+					On Open-Sora-Plan-v1.3
+				</button>
+				<div id="second-nested-collapse"
+					class="accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
+					aria-labelledby="second-nested" role="region">
+					<div class="video-block">
+						<div class="accordion divide-neutral/20 divide-y ps-6">
+							<div class="accordion-item active" id="second-sub-one">
+								<!-- <button
+											class="accordion-toggle inline-flex items-center gap-x-4 text-start"
+											aria-controls="second-sub-collapse-one"
+											aria-expanded="true">
+											<span
+												class="icon-[tabler--plus] accordion-item-active:hidden text-base-content size-4.5 block shrink-0"></span>
+											<span
+												class="icon-[tabler--minus] accordion-item-active:block text-base-content size-4.5 hidden shrink-0"></span>
+											Title1
+										</button> -->
+								<div id="second-sub-collapse-one"
+									class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+									aria-labelledby="second-sub-one" role="region">
+									<div class="px-5 pb-4">
+										<ul role="list" class="grid grid-cols-3 gap-x-1 gap-y-8">
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/comp_opensora/camel/genlvideo.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Gen-L-Video
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/comp_opensora/camel/fifo.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													FIFO
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/comp_opensora/camel/ours.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Ours
+												</p>
+											</li>
+										</ul>
+									</div>
+									<div class="px-5 pb-4">
+										<label
+											class="swap rounded-full bg-white px-3.5 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+											<input id="OpenSoraControl" type="checkbox" />
+											<span class="swap-off inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-play]"></span>
+												<span class="pl-1.5">Play All
+													Videos</span>
+											</span>
+											<span class="swap-on inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-pause]"></span>
+												Pause All Videos
+											</span>
+										</label>
+										<p class="text-base-content/80 font-normal pt-3">
+											<b>Global prompt</b>: A
+											camel in a snowy
+											environment, its
+											presence standing out
+											against the cold and
+											wintry landscape.
+											<br />
+											<b>Local prompt 1</b>:
+											The camel is running
+											across the snow field.
+											<br />
+											<b>Local prompt 2</b>:
+											The camel stands still
+											on the snow field.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Ablation section -->
+	<div class="relative mx-auto max-w-5xl px-6 lg:px-8 mt-14">
+		<div class="border-b border-gray-300 pb-5">
+			<h3 class="text-3xl font-semibold text-gray-900">
+				Removing Each Stage in SynCos
+			</h3>
+		</div>
+
+		<div class="accordion divide-neutral/20 max-w-4xl divide-y">
+			<div class="accordion-item" id="first-nested">
+				<br>
+				<div id="first-nested-collapse"
+					class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+					aria-labelledby="first-nested" role="region">
+					<div class="video-block">
+						<div class="accordion divide-neutral/20 divide-y ps-6">
+							<div class="accordion-item active" id="first-sub-one">
+								<div id="third-sub-collapse-one"
+									class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+									aria-labelledby="first-sub-one" role="region">
+									<div class="px-5 pb-4">
+										<ul role="list" class="grid grid-cols-3 gap-x-1 gap-y-8">
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/ablation/sky/wo_first_stage.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Without first stage
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/ablation/sky/wo_second_stage.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Without second stage
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/ablation/sky/syncos.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													SynCoS
+												</p>
+											</li>
+										</ul>
+									</div>
+									<div class="px-5 pb-4">
+										<label
+											class="swap rounded-full bg-white px-3.5 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+											<input id="AblationControl1" type="checkbox" />
+											<span class="swap-off inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-play]"></span>
+												<span class="pl-1.5">Play All
+													Videos</span>
+											</span>
+											<span class="swap-on inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-pause]"></span>
+												Pause All Videos
+											</span>
+										</label>
+										<p class="text-base-content/80 font-normal pt-3">
+											<b>Global prompt</b>: The whole beautiful view of the city is shown. The
+											setting sun casts a warm glow, with light reflecting off buildings, creating
+											a serene and picturesque scene.
+											<br />
+											<b>Local prompt 1</b>:
+											The sky is deep orange.
+											<br />
+											<b>Local prompt 2</b>:
+											The sky is purple.
+											<br />
+											<b>Local prompt 3</b>:
+											The city glows under the night sky.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="accordion-item" id="second-nested">
+				<br>
+				<div id="second-nested-collapse"
+					class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+					aria-labelledby="second-nested" role="region">
+					<div class="video-block">
+						<div class="accordion divide-neutral/20 divide-y ps-6">
+							<div class="accordion-item active" id="second-sub-one">
+								<div id="fourth-sub-collapse-one"
+									class="accordion-content w-full overflow-hidden transition-[height] duration-300"
+									aria-labelledby="second-sub-one" role="region">
+									<div class="px-5 pb-4">
+										<ul role="list" class="grid grid-cols-3 gap-x-1 gap-y-8">
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/ablation/coffee/wo_first_stage.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Without first stage
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/ablation/coffee/wo_second_stage.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													Without second stage
+												</p>
+											</li>
+											<li class="relative">
+												<div
+													class="group overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+													<video class="size-full object-cover rounded-2xl">
+														<source src="resources/ablation/coffee/syncos.mp4"
+															type="video/mp4" />
+													</video>
+												</div>
+												<p
+													class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
+													SynCoS
+												</p>
+											</li>
+										</ul>
+									</div>
+									<div class="px-5 pb-4">
+										<label
+											class="swap rounded-full bg-white px-3.5 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+											<input id="AblationControl2" type="checkbox" />
+											<span class="swap-off inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-play]"></span>
+												<span class="pl-1.5">Play All
+													Videos</span>
+											</span>
+											<span class="swap-on inline-flex items-center gap-x-1.5">
+												<span class="icon-[tabler--player-pause]"></span>
+												Pause All Videos
+											</span>
+										</label>
+										<p class="text-base-content/80 font-normal pt-3">
+											<b>Global prompt</b>: A handsome young man sits at a wooden table, enjoying
+											a moment of relaxation with a cup of coffee.
+											<br />
+											<b>Local prompt 1</b>:
+											He takes a slow sip enjoying his drink.
+											<br />
+											<b>Local prompt 2</b>:
+											A beautiful young lady sits beside him.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</main>
+
+	<br /><br />
+	</div>
+	<script src="bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+	<script>
+		// Initialize Clipboard.js
+		(function () {
+			window.addEventListener("load", () => {
+				const clipboards =
+					document.querySelectorAll(".copy-clipboard");
+
+				clipboards.forEach((el) => {
+					const isToggleTooltip =
+						HSStaticMethods.getClassProperty(
+							el,
+							"--is-toggle-tooltip"
+						) !== "false";
+
+					const clipboard = new ClipboardJS(el, {
+						text: (trigger) => {
+							const clipboardText =
+								trigger.dataset.clipboardText;
+							if (clipboardText) return clipboardText;
+
+							const clipboardTarget =
+								trigger.dataset.clipboardTarget;
+							const targetElement =
+								document.querySelector(clipboardTarget);
+
+							return targetElement.tagName === "SELECT" ||
+								targetElement.tagName === "INPUT" ||
+								targetElement.tagName === "TEXTAREA" ?
+								targetElement.value :
+								targetElement.textContent;
+						},
+					});
+
+					clipboard.on("success", () => {
+						const defaultElement = el.querySelector(
+							".copy-clipboard-default"
+						);
+						const successElement = el.querySelector(
+							".copy-clipboard-success"
+						);
+						const successTextElement = el.querySelector(
+							".copy-clipboard-success-text"
+						);
+						const successText =
+							el.dataset.clipboardSuccessText || "";
+						const tooltip = el.closest(".tooltip");
+						const tooltipInstance = HSTooltip.getInstance(
+							tooltip,
+							true
+						);
+						let oldSuccessText;
+
+						if (successTextElement) {
+							oldSuccessText = successTextElement.textContent;
+							successTextElement.textContent = successText;
+						}
+
+						if (defaultElement && successElement) {
+							defaultElement.style.display = "none";
+							successElement.style.display = "block";
+						}
+						if (tooltip && isToggleTooltip)
+							HSTooltip.show(tooltip);
+						if (tooltip && !isToggleTooltip)
+							tooltipInstance.element.popperInstance.update();
+						setTimeout(() => {
+							if (successTextElement && oldSuccessText)
+								successTextElement.textContent =
+								oldSuccessText;
+							if (tooltip && isToggleTooltip)
+								HSTooltip.hide(tooltip);
+							if (tooltip && !isToggleTooltip)
+								tooltipInstance.element.popperInstance.update();
+							if (defaultElement && successElement) {
+								successElement.style.display = "";
+								defaultElement.style.display = "";
+							}
+						}, 3000);
+					});
+				});
+			});
+		})();
+
+		// JavaScript to play all videos simultaneously
+		document.addEventListener("DOMContentLoaded", () => {
+			const playPauseToggle1 =
+				document.querySelector("#CogVideoXControl");
+			const videos1 = document.querySelectorAll(
+				"#first-sub-collapse-one video"
+			);
+
+			// Add event listener to the checkbox
+			playPauseToggle1.addEventListener("change", (event) => {
+				if (event.target.checked) {
+					// Play all videos
+					videos1.forEach((video) => video.play());
+				} else {
+					// Pause all videos
+					videos1.forEach((video) => video.pause());
+				}
+			});
+
+			const playPauseToggle2 =
+				document.querySelector("#OpenSoraControl");
+			const videos2 = document.querySelectorAll(
+				"#second-sub-collapse-one video"
+			);
+
+			// Add event listener to the checkbox
+			playPauseToggle2.addEventListener("change", (event) => {
+				if (event.target.checked) {
+					// Play all videos
+					videos2.forEach((video) => video.play());
+				} else {
+					// Pause all videos
+					videos2.forEach((video) => video.pause());
+				}
+			});
+
+			const playPauseToggle3 =
+				document.querySelector("#AblationControl1");
+			const videos3 = document.querySelectorAll(
+				"#third-sub-collapse-one video"
+			);
+
+			// Add event listener to the checkbox
+			playPauseToggle3.addEventListener("change", (event) => {
+				if (event.target.checked) {
+					// Play all videos
+					videos3.forEach((video) => video.play());
+				} else {
+					// Pause all videos
+					videos3.forEach((video) => video.pause());
+				}
+			});
+			const playPauseToggle4 =
+				document.querySelector("#AblationControl2");
+			const videos4 = document.querySelectorAll(
+				"#fourth-sub-collapse-one video"
+			);
+
+			// Add event listener to the checkbox
+			playPauseToggle4.addEventListener("change", (event) => {
+				if (event.target.checked) {
+					// Play all videos
+					videos4.forEach((video) => video.play());
+				} else {
+					// Pause all videos
+					videos4.forEach((video) => video.pause());
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>
