@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Document</title>
+	<title>SynCoS</title>
 	<link href="./output.css" rel="stylesheet" />
 </head>
 
@@ -16,7 +16,7 @@
 				<div class="mx-auto max-w-5xl px-6 lg:px-8">
 					<div class="mx-auto text-center">
 						<h1 class="text-balance text-6xl font-semibold tracking-tight text-gray-900">
-							Tuning-Free Multi-event Long Video Generation
+							Tuning-Free Multi-Event Long Video Generation
 							via Synchronized Coupled Sampling
 						</h1>
 						<p class="mt-8 text-pretty text-lg font-light text-gray-800 sm:text-xl/8">
@@ -124,12 +124,12 @@
 
 					<!-- Caption -->
 					<p class="text-base-content/100 font-normal pt-3">
-						SynCoS generates diverse long videos across multi-event scenarios, guided by text prompts.  
-						It employs a structured prompt, 
-						combining a global prompt shared across scenario-wise consistency, and
-						local prompts for precise control over specific intervals.  
+						SynCoS generates high-quality long videos with diverse multi-event dynamics.
+						It employs a structured prompt, combining a global prompt shared across scenario-wise
+						consistency, and local prompts for precise control over specific intervals.
 						<br><br>
-						Various scenarios generated with SynCoS (arranged in row-major order from left to right, top to bottom):
+						Various scenarios generated with SynCoS (arranged in row-major order from left to right, top to
+						bottom):
 						<br>
 						object motion control (gorilla, Jamaican),
 						cinematic effects (figure, apple, astronaut),
@@ -245,29 +245,23 @@
 				</h3>
 			</div>
 			<p class="text-base-content/80 font-normal pt-3">
-				While recent advancements in text-to-video diffusion models enable
-				high-quality short video generation from a single prompt,
-				generating real-world long videos in a single pass remains challenging
-				due to limited data and high computational costs.
-				To address this, several techniques were recently proposed in a tuning-free manner,
-				i.e., extending existing models for long video generation,
-				specifically using multiple prompts to allow for dynamic and controlled content changes.
-				However, these methods primarily focus on local transitions between adjacent frames,
-				often leading to content drift and a loss of semantic coherence over long sequences.
-				To tackle such an issue, we propose Synchronized Coupled Sampling (SynCoS),
-				a novel inference framework that synchronizes denoising paths across the entire video,
-				ensuring long-range consistency across both adjacent and distant frames.
-				Our approach integrates two complementary sampling strategies:
-				reverse and optimization-based sampling, which ensure seamless local transitions and enforce global
-				coherence, respectively.
-				Here, directly alternating between these samplings misaligns denoising trajectories,
-				disrupting prompt guidance and causing unintended content changes as they operate independently.
-				To resolve this, SynCoS synchronizes them through a grounded timestep and a fixed baseline noise,
-				ensuring fully coupled sampling with aligned denoising paths.
-				Experiments demonstrate that SynCoS significantly improves
-				prompt-controlled long video generation, achieving smoother transitions and superior long-range
-				coherence,
-				outperforming previous methods both quantitatively and qualitatively.
+				While recent advancements in text-to-video diffusion models enable high-quality short video generation
+				from a single prompt, generating real-world long videos in a single pass remains challenging due to
+				limited data and high computational costs. To address this, several works propose tuning-free
+				approaches, i.e., extending existing models for long video generation, specifically using multiple
+				prompts to allow for dynamic and controlled content changes. However, these methods primarily focus on
+				ensuring smooth transitions between adjacent frames, often leading to content drift and a gradual loss
+				of semantic coherence over longer sequences. To tackle such an issue, we propose Synchronized Coupled
+				Sampling (SynCoS), a novel inference framework that synchronizes denoising paths across the entire
+				video, ensuring long-range consistency across both adjacent and distant frames. Our approach combines
+				two complementary sampling strategies: reverse and optimization-based sampling, which ensure seamless
+				local transitions and enforce global coherence, respectively. However, directly alternating between
+				these samplings misaligns denoising trajectories, disrupting prompt guidance and introducing unintended
+				content changes as they operate independently. To resolve this, SynCoS synchronizes them through a
+				grounded timestep and a fixed baseline noise, ensuring fully coupled sampling with aligned denoising
+				paths. Extensive experiments show that SynCoS significantly improves multi-event long video generation,
+				achieving smoother transitions and superior long-range coherence, outperforming previous approaches both
+				quantitatively and qualitatively.
 			</p>
 		</div>
 
@@ -281,8 +275,10 @@
 				<h3 class="text-3xl font-semibold text-gray-900">
 					Key observations
 					<p class="text-2xl text-base-content/80 font-normal pt-3">
-						Existing temporal co-denoising methods suffer from either divergence or excessive convergence.
-						However, SynCoS strikes a balance between them.
+						Temporal co-denoising is a promising approach for seamlessly connecting short video clips
+						into a longer sequence.
+						However, existing methods suffer from either divergence or excessive convergence.
+						In contrast, SynCoS strikes a balance between them.
 					</p>
 				</h3>
 			</div>
@@ -293,17 +289,19 @@
 				<img src="resources/tsne.png" alt="t-SNE visualization of CLIP features" width="500" />
 
 				<p class="text-base-content/100 font-normal max-w-xl">
-					<b>t-SNE visualization of CLIP features</b> for the predicted video frames, x0, at each timestep
-					using different samplings. Faded colors indicate earlier timesteps (t ≈ 1000),
-					while vivid colors indicate later, small timesteps (t ≈ 0),
-					illustrating feature trajectory evolution over time (top to bottom).
+					<b>t-SNE visualization of CLIP features</b> for the predicted video frames, x<sub>0|t</sub>,
+					at each timestep
+					using different samplings. Faded colors indicate ear-
+					lier timesteps (t ≈ 1000), while vivid colors indicate
+					later, small timesteps (t ≈ 0), illustrating feature tra-
+					jectory evolution over time (top to bottom)
 					<br /><br />
 
-					<b>1. Temporal co-denoising with DDIM<span style="color: rgb(6, 78, 35);"> (green dots)</span></b>
-					:smooth transition but <b><span style="color: rgb(6, 78, 35);">divergent</span></b> denoising
+					<b>1. Temporal co-denoising with DDIM<span style="color: rgb(6, 78, 35);"> (green dots)</span></b>:
+					smooth transition but <b><span style="color: rgb(6, 78, 35);">divergent</span></b> denoising
 					paths<br />
-					<b>2. Temporal co-denoising with CSD <span style="color: rgb(187, 17, 17);">(red dots)</span></b>
-					:global coherency but <b><span style="color: rgb(187, 17, 17);">overly collapsed</span></b> into
+					<b>2. Temporal co-denoising with CSD <span style="color: rgb(187, 17, 17);">(red dots)</span></b>:
+					global coherency but <b><span style="color: rgb(187, 17, 17);">overly collapsed</span></b> into
 					noise-like artifacts<br />
 					<b>3. Temporal co-denoising with SynCoS<span style="color: rgb(19, 41, 114);"> (blue
 							dots)</span></b>:
@@ -412,8 +410,7 @@
 					Overview
 				</h3>
 				<p class="text-2xl text-base-content/80 font-normal pt-3">
-					Our tuning-free inference framework, SynCoS,
-					consists of three coupled stages.
+					Our tuning-free inference framework, Synchronized Coupled Sampling (SynCoS)
 				</p>
 			</div>
 
@@ -424,7 +421,7 @@
 				<b>1. Perform temporal co-denoising with DDIM</b>
 				and applying fusion for local smoothness.
 				At this stage, instead of fully reverting each chunk to its previous timestep,
-				SynCoS proceed until obtaining the data space samples through DDIM update,
+				SynCoS proceeds until obtaining the data space samples through DDIM update,
 				then fuse them to ensure smooth transitions between overlapping chunks.
 				<br />
 				<b>2. Refine the locally fused output to enforce global coherency</b>.
@@ -432,7 +429,7 @@
 				as a refinement task, SynCoS effectively achieves global
 				synchronization across multiple video chunks.
 				<br />
-				<b>3. Resume the temporal co-denoising with DDIM using locally and globally refined output</b>
+				<b>3. Resume the temporal co-denoising with DDIM using locally and globally refined output.</b>
 				SynCoS reverts the refined and fused output to the previous timestep.
 				<br />
 			</p>
