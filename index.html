@@ -40,7 +40,7 @@
 											style="color: rgb(64, 86, 162);"">Seoung Wug Oh</text><sup>2</sup></a>,&nbsp&nbsp&nbsp
 								<a href="https://juiwang.com/" class="hover:underline"><text style="color: rgb(64, 86, 162);"">Jui-Hsien Wang</text><sup>2</sup></a>,&nbsp&nbsp&nbsp
 								<a href="https://joonyoung-cv.github.io/" class="hover:underline"><text style="color: rgb(64, 86, 162);"">Joon-Young Lee</text><sup>2</sup></a>,&nbsp&nbsp&nbsp
-								<a href="https://alinlab.kaist.ac.kr/shin.html" class="hover:underline"><text style="color: rgb(64, 86, 162);"">Jinwoo Shin</text><sup>1</sup></a>,&nbsp&nbsp&nbsp
+								<a href="https://alinlab.kaist.ac.kr/shin.html" class="hover:underline"><text style="color: rgb(64, 86, 162);"">Jinwoo Shin</text><sup>1</sup></a>
 							</div>
 
 							<br>
@@ -314,31 +314,28 @@
 			</div>
 
 			<br />
+			<center>
+			<img src="resources/tsne.png" alt="t-SNE visualization of CLIP features" width="500" /> 
+		</center>
 
-			<div class="flex flex-col lg:flex-row items-start gap-16">
-				<img src="resources/tsne.png" alt="t-SNE visualization of CLIP features" width="500" />
+			<p class="text-base-content/100 font-normal max-w-xl">
+				<b>t-SNE visualization of CLIP features</b> for the predicted video frames, x<sub>0|t</sub>,
+				at each timestep
+				using different samplings. Faded colors indicate earlier timesteps (t ≈ 1000), while vivid colors indicate
+				later, small timesteps (t ≈ 0), illustrating feature trajectory evolution over time (top to bottom)
+				<br /><br />
 
-				<p class="text-base-content/100 font-normal max-w-xl">
-					<b>t-SNE visualization of CLIP features</b> for the predicted video frames, x<sub>0|t</sub>,
-					at each timestep
-					using different samplings. Faded colors indicate ear-
-					lier timesteps (t ≈ 1000), while vivid colors indicate
-					later, small timesteps (t ≈ 0), illustrating feature tra-
-					jectory evolution over time (top to bottom)
-					<br /><br />
-
-					<b>1. Temporal co-denoising with DDIM<span style="color: rgb(6, 78, 35);"> (green dots)</span></b>:
-					smooth transition but <b><span style="color: rgb(6, 78, 35);">divergent</span></b> denoising
-					paths<br />
-					<b>2. Temporal co-denoising with CSD <span style="color: rgb(187, 17, 17);">(red dots)</span></b>:
-					global coherency but <b><span style="color: rgb(187, 17, 17);">overly collapsed</span></b> into
-					noise-like artifacts<br />
-					<b>3. Temporal co-denoising with SynCoS<span style="color: rgb(19, 41, 114);"> (blue
-							dots)</span></b>:
-					<b><span style="color: rgb(19, 41, 114);">balanced</span></b> capturing both global coherency
-					and local smoothness<br />
-				</p>
-			</div>
+				<b>1. <span style="color: rgb(6, 78, 35);">Temporal co-denoising with DDIM (green dots)</span></b>:
+				smooth transition but <b><span style="color: rgb(6, 78, 35);">divergent</span></b> denoising
+				paths<br />
+				<b>2. <span style="color: rgb(187, 17, 17);">Temporal co-denoising with CSD (red dots)</span></b>:
+				global coherency but <b><span style="color: rgb(187, 17, 17);">overly collapsed</span></b> into
+				noise-like artifacts<br />
+				<b>3. <span style="color: rgb(19, 41, 114);">Temporal co-denoising with SynCoS (blue
+						dots)</span></b>:
+				<b><span style="color: rgb(19, 41, 114);">balanced</span></b> capturing both global coherency
+				and local smoothness<br />
+			</p>
 
 			<div class="accordion divide-neutral/20 max-w-4xl divide-y">
 				<div class="accordion-item" id="first-nested">
@@ -364,7 +361,7 @@
 													</div>
 													<p
 														class="pointer-events-none mt-2 block truncate text-sm font-medium text-red-900 text-center">
-														Temporal co-denosing with DDIM
+														<span style="color: rgb(6, 78, 35);"><b>Temporal co-denosing with DDIM</b></span>
 													</p>
 												</li>
 												<li class="relative">
@@ -377,7 +374,7 @@
 													</div>
 													<p
 														class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
-														Temporal co-denosing with CSD
+														<span style="color: rgb(187, 17, 17);"><b>Temporal co-denosing with CSD</b></span>
 													</p>
 												</li>
 												<li class="relative">
@@ -390,7 +387,7 @@
 													</div>
 													<p
 														class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900 text-center">
-														Temporal co-denosing with SynCoS
+														<span style="color: rgb(19, 41, 114);"><b>Temporal co-denosing with SynCoS</b></span>
 													</p>
 												</li>
 											</ul>
