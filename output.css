@@ -5282,6 +5282,12 @@ textarea:focus-visible {
   color: rgb(17 24 39 / var(--tw-text-opacity, 1));
 }
 
+.text-blue-900 {
+  --tw-text-opacity: 1;
+  color: rgb(56 92 169 / var(--tw-text-opacity, 1));
+}
+
+
 .text-primary {
   --tw-text-opacity: 1;
   color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity, 1)));
