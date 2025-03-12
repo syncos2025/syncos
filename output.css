@@ -5790,3 +5790,44 @@ video {
   align-items: center;
 }
 
+/* Styling for the link container */
+.link-block {
+  display: inline-block;
+  margin: 6px 0;
+}
+
+/* Styling for the link button */
+.link-block a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 25px; /* Increased horizontal padding to make button longer */
+  border-radius: 25px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  min-width: 120px; /* Ensuring a minimum width for a longer button */
+  justify-content: center;
+}
+
+/* Hover effect for the button */
+.link-block a:hover {
+  background-color: #555;
+  transform: scale(1.05);
+}
+
+/* Icon styling */
+.link-block .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensuring the AI arXiv icon has appropriate spacing */
+.link-block .icon i {
+  font-size: 18px;
+  color: white;
+}
